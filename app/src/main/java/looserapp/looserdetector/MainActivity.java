@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
 
     private int compassValueButton = 0;
     private int compassValue;
+    private boolean hasButtonBeenPressed = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -34,6 +36,7 @@ public class MainActivity extends Activity {
 
         sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+
         if (sensor != null) {
             sensorService.registerListener(mySensorEventListener, sensor,
                     SensorManager.SENSOR_DELAY_NORMAL);
@@ -51,6 +54,7 @@ public class MainActivity extends Activity {
     {
         sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+
         if (sensor != null) {
             sensorService.registerListener(mySensorEventListener, sensor,
                     SensorManager.SENSOR_DELAY_NORMAL);
@@ -64,6 +68,18 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+        switch(keycode) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:{
+                compassValueButton = compassValue;
+                hasButtonBeenPressed = true;
+                return true;
+            }
+        }
+
+        return super.onKeyDown(keycode, e);
+    }
 
     private SensorEventListener mySensorEventListener = new SensorEventListener() {
 
@@ -78,7 +94,7 @@ public class MainActivity extends Activity {
             //float azimuth = event.values[0];
             compassValue = (int)event.values[0];
 
-            if( (compassValue < (compassValueButton + 20)) && ( compassValue > (compassValueButton - 20) ))
+            if( ((compassValue < (compassValueButton + 10)) && ( compassValue > (compassValueButton - 10) )) && hasButtonBeenPressed )
             {
                Button p1_button = (Button)findViewById(R.id.button);
                p1_button.setText("Loser Detected!");
@@ -96,6 +112,7 @@ public class MainActivity extends Activity {
         }
     };
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -103,7 +120,8 @@ public class MainActivity extends Activity {
             sensorService.unregisterListener(mySensorEventListener);
         }
     }
-    public void buttonOnClick(View v){
+
+/*    public void buttonOnClick(View v){
        // Button button = (Button) v;
         //((Button) v).setText("clicked");
 
@@ -111,11 +129,11 @@ public class MainActivity extends Activity {
 
         compassValueButton = compassValue;
 
-        startActivity(new Intent(MainActivity.this , Second.class));
+        //startActivity(new Intent(MainActivity.this , Second.class));
 
 
-/*        Intent nextScreen = new Intent(getApplicationContext(), MainActivity2.class);
-        startActivity(nextScreen);*/
-    }
+*//*        Intent nextScreen = new Intent(getApplicationContext(), MainActivity2.class);
+        startActivity(nextScreen);*//*
+    }*/
 
 }
