@@ -4,6 +4,7 @@ package looserapp.looserdetector;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,6 +21,9 @@ public class MainActivity extends Activity {
     private static SensorManager sensorService;
     private MyCompassView compassView;
     private Sensor sensor;
+    private Sensor lightSensor;
+    Camera camera;
+
 
     private int compassValueButton = 0;
     private int compassValue;
@@ -35,6 +39,8 @@ public class MainActivity extends Activity {
         //setContentView(compassView);
 
         sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorService.getDefaultSensor(Sensor.TYPE_LIGHT);
+
         sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
         if (sensor != null) {
@@ -54,6 +60,7 @@ public class MainActivity extends Activity {
     {
         sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        //sensor = sensorService.getDefaultSensor(SensorManager.getOrientation());
 
         if (sensor != null) {
             sensorService.registerListener(mySensorEventListener, sensor,
